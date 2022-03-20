@@ -6,7 +6,7 @@
  * api viacep.com.br
 
 
- **para executa-lo, deve-se estar com o android studio instalado
+ **para executa-lo, deve-se estar com o android studio instalado**
 
 
 
