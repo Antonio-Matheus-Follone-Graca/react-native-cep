@@ -1,46 +1,40 @@
 import React,{Component, useEffect, useState } from 'react'
 
-import{Text,View,StyleSheet,TextInput,Button,TouchableOpacity,Alert} from 'react-native'
+import{Text,View,StyleSheet,TextInput,TouchableOpacity,Alert} from 'react-native'
 
 
 
 
-export default class App extends Component{
-  
-  state={
-  cep:'',
-  dados:{
-    logradouro:'',
-    uf:'',
-    cidade:'',
-    bairro:''
-  }
-}
- 
+export default  function Cep(){
+  // hooks dos campos que envolvem informações do cep
+  const[cep,setCep]=useState("")
+  const[logradouro,setLogradouro]=useState("")
+  const[uf,setUf]=useState("")
+  const[cidade,setCidade]=useState("")
+  const[bairro,setBairro]=useState("")
 
+  // funcao que formata os números do cep 
   handleCep = (value) => {
     // 00000-000
- 
-    this.setState({
       // regex 
       // cep pega o valor formatado do cep
-        cep:value.replace(/\D/g, "").replace(/^(\d{5})(\d{3})+?$/, "$1-$2")
-      })
+      setCep(value.replace(/\D/g, "").replace(/^(\d{5})(\d{3})+?$/, "$1-$2"))
+     
     
   }
 
    buscar = () =>{
-    if(this.state.cep.length<8){
+    if(cep.length<8){
       Alert.alert("cep incompleto")
-      this.setState({dados:''})
+      
     }
     else{
       // url que retorna um cep
-        fetch (`https://viacep.com.br/ws/${this.state.cep}/json/`).then(res=>res.json()).then(data=>{
-    
-            this.setState({
-              dados:data
-            })
+        fetch (`https://viacep.com.br/ws/${cep}/json/`).then(res=>res.json()).then(data=>{
+          setLogradouro(data.logradouro)
+          setUf(data.uf)
+          setBairro(data.bairro)
+          setCidade(data.cidade)
           
           })
           .catch(err=>{
@@ -48,17 +42,13 @@ export default class App extends Component{
           })
     }
   }
-  
-
-    render(){
-    
       return(
         <View style={styles.container}>
     
           <Text style={styles.titulo}> Digite o CEP </Text>
             <TextInput placeholder='ex:01010-000' 
               style={styles.input}
-              value={this.state.cep}
+              value={cep}
               onChangeText={( t )=>this.handleCep( t )} // funcao que chama o regex
               maxLength={9}
               keyboardType="numeric"
@@ -70,17 +60,17 @@ export default class App extends Component{
           </TouchableOpacity>
 
           <Text>   </Text>
-          {this.state.dados.uf ? 
+          {uf ? 
             <View style={styles.cep}> 
-              <Text> cidade :{this.state.dados.localidade} </Text>
-              <Text> logradouro :{this.state.dados.logradouro} </Text>
-              <Text> Bairro :{this.state.dados.bairro} </Text>
-              <Text> uf :{this.state.dados.uf} </Text>  
+              <Text> cidade :{cidade} </Text>
+              <Text> logradouro :{logradouro} </Text>
+              <Text> Bairro :{bairro} </Text>
+              <Text> uf :{uf} </Text>  
               </View>
               : null }         
         </View>
         )
-    }
+    
 }
 
 const styles=StyleSheet.create({
